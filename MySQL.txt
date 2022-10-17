@@ -7,7 +7,7 @@ create table pessoas (
 
 id int not null auto_increment,
 nome varchar (30) not null,
-nascimento date,										/* criar banco variaveis*/
+nascimento date,										/* criar tabela - atributos*/
 sexo enum ('M','F'),
 peso decimal (5,2),
 altura decimal (3,2),
@@ -52,7 +52,7 @@ change = modificar nome e coluna
 rename to = modificar nome da tabela*/
 
 SET SQL_SAFE_UPDATES = 0; 
-update pessoas 										/*permite que alterar colunas com not null*/
+update pessoas 										/*permite alterar colunas com not null*/
  set profissao='';
 
 alter table pessoas					
@@ -61,7 +61,7 @@ rename to gafanhotos;					/*muda nome da tabela*/
 alter table pessoas
 modify column profissao varchar(20) not null default '';     /*muda tipo primitivo da colunae e as constraint*/
 															
-                                                            /*se for n„o for modificar o nome na coluna usar o modify, se for mudar usar o change*/
+                                                            /*se n√£o for modificar o nome na coluna usar o modify, se for mudar o nome da coluna usar o change*/
 alter table pessoas
 change column profissao prof varchar(20) ;			/*muda nome e tipo primitivo da coluna e as constraint*/
 
@@ -113,15 +113,15 @@ INSERT INTO cursos VALUES
 /*(idcursos, nome, descricao,carga,totaulas,ano);*/
     
     ('1','HTML4','Curso de HTML5', '40','37','2014'),
-    ('2','Algoritmos','LÛgica de ProgramaÁ„o','20','15','2014'),
+    ('2','Algoritmos','L√≥gica de Programa√ß√£o','20','15','2014'),
     ('3','Photoshop','Dicas de Photoshop CC','10','8','2014'),
     ('4','PGP','Curso de PHP para iniciantes','40','20','2010'),
-    ('5','Jarva','IntroduÁ„o ‡ Linguagem Java','10','29','2000'),
+    ('5','Jarva','Introdu√ß√£o √† Linguagem Java','10','29','2000'),
     ('6','MySQL','Banco de Dados MySQL','30','15','2016'),
     ('7','Word','Curso completo de Word','40','30','2016'),
-    ('8','Sapateado','DanÁas RÌtmicas','40','30','2018'),
-    ('9','Cozinha ¡rabe','Aprenda a fazer Kibe','40','30','2018'),
-    ('10','Youtuber','Gerar polÍmica e ganhar inscritos','5','2','2018');
+    ('8','Sapateado','Dan√ßas R√≠tmicas','40','30','2018'),
+    ('9','Cozinha √Årabe','Aprenda a fazer Kibe','40','30','2018'),
+    ('10','Youtuber','Gerar pol√™mica e ganhar inscritos','5','2','2018');
     
     
     /*linhas sao registros, colunas sao campos*/
@@ -305,9 +305,9 @@ where nome like '%_silva%';   /*selecionara registros que tenha silva em qualque
 select*from gafanhotos
 where nome like '%silva%';
 
-select distinct nacionalidade from gafanhotos;	/* A SentenÁa SQL SELECT DISTINCT. Em uma tabela, algumas 
-												das colunas podem conter valores duplicados. Este n„o È um problema, no entanto, 
-                                                ‡s vezes vocÍ ir· querer listar apenas os valores diferentes (distintos)*/
+select distinct nacionalidade from gafanhotos;	/* A Senten√ßa SQL SELECT DISTINCT. Em uma tabela, algumas 
+												das colunas podem conter valores duplicados. Este n√£o √© um problema, no entanto, 
+                                                √†s vezes voc√™ ir√° querer listar apenas os valores diferentes (distintos)*/
                                               
 /* funcoes de agregacao*/
 select count(*)from cursos; 	/* contara o numero de linhas/registros*/
@@ -444,14 +444,14 @@ select*from cursos;
  where nascimento > '2005-01-01'
  group by sexo;
  
- /* 3-Uma lista com os gafanhotos que nasceram fora do Brasil, mostrando o paÌs de origem e o total de pessoas nascidas l·. SÛ nos interessam os paÌses que tiverem mais de 3 gafanhotos com essa nascionalidade.*/
+ /* 3-Uma lista com os gafanhotos que nasceram fora do Brasil, mostrando o pa√≠s de origem e o total de pessoas nascidas l√°. S√≥ nos interessam os pa√≠ses que tiverem mais de 3 gafanhotos com essa nascionalidade.*/
  
  select nacionalidade, count(*) from gafanhotos
  where nacionalidade !='brasil'
 group by nacionalidade
  having count(*) > 3;
  
- /*  4-Uma lista agrupada pela altura dos gafanhotos, mostrando quantas pessoas pesam mais de 100kg e que est„o acima da mÈdia de altura de todos os cadastrados.*/
+ /*  4-Uma lista agrupada pela altura dos gafanhotos, mostrando quantas pessoas pesam mais de 100kg e que est√£o acima da m√©dia de altura de todos os cadastrados.*/
  
  select nome, altura, count(*) from gafanhotos
  where peso >'100'
@@ -487,12 +487,12 @@ delete from cursos where idcurso = '28'; /*possivel apagar o registro, pois nao 
 select gafanhotos.nome , gafanhotos.cursopreferido, cursos.nome, cursos.ano from gafanhotos join cursos
 on gafanhotos.cursopreferido = cursos.idcurso
 order by cursos.idcurso;     
-/* a palava antes do ponto referencia a tabala do atributo desejado 'gafanhotos.nome', A cl·usula inner JOIN È 
-usada quando se quer recuperar dados em mais de uma tabela atravÈs da igualdade de suas foreign keys,
+/* a palava antes do ponto referencia a tabala do atributo desejado 'gafanhotos.nome', A cl√°usula inner JOIN √© 
+usada quando se quer recuperar dados em mais de uma tabela atrav√©s da igualdade de suas foreign keys,
 ON sempre dede ser usando em um join, para por sentido a ele, colocando a key estrangeira = a primaria.*/
 
 select g.nome , g.cursopreferido, c.nome, c.ano from gafanhotos as g join cursos as c
-on g.cursopreferido = c.idcurso											/* as=È, as transforma abreviando o nome da tabela, 'from gafanhotos as g join cursos as c'*/
+on g.cursopreferido = c.idcurso											/* as=√©, as transforma abreviando o nome da tabela, 'from gafanhotos as g join cursos as c'*/
 order by c.idcurso;  
 
 select gafanhotos.nome , gafanhotos.cursopreferido, cursos.nome, cursos.ano from gafanhotos left outer join cursos  
@@ -502,7 +502,7 @@ order by cursos.idcurso;
 /* outer join mostrara os dados que nao sao relacionados, left mostrara a tabela do lado esquerdo, right a do lado direoto
 ex: from gafanhotos left outer join cursos , mostrara a de gafanhotos*/
 
-/*********************************************INNER JOIN com v·rias tabelas********************************************/
+/*********************************************INNER JOIN com v√°rias tabelas********************************************/
 
 /*relacionamento NxN ou muitos para muitos*/
 
