@@ -1,0 +1,572 @@
+create database cadastro
+default character set utf8								/*criar banco utf8*/
+default collate utf8_general_ci;
+/*====================================================*/
+
+create table pessoas (
+
+id int not null auto_increment,
+nome varchar (30) not null,
+nascimento date,										/* criar banco variaveis*/
+sexo enum ('M','F'),
+peso decimal (5,2),
+altura decimal (3,2),
+nacionalidade varchar(20) default 'Brasil',
+primary key(id)
+)default charset= utf8;
+
+
+/*======================================================================================================================*/
+/*insert INTO pessoas
+( id,nome, nascimento, sexo, peso, altura, nacionalidade);*/
+
+insert INTO pessoas values 
+(default, 'claudio','1999-02-08','M','65.7','1.65','brasil'),		/*adicionar conteudo as colunas*/
+(default, 'ana','2000-07-15','F', '80','1.80','eua'),
+(default, 'pedro','2001-07-08','M', '103','1.70',DEFAULT);
+/*====================================================================================================================*/
+
+describe pessoas;   /* descreve a forma da coluna*/		
+
+select*from pessoas;    /*descreve o conteudo das colunas*/
+
+/*===================================================================================================================*/
+
+
+alter table pessoas
+add column profissao varchar(10);    /*adiciona coluna a tabela*/
+
+alter table pessoas
+drop column  profissao;				/* apaga coluna de uma tabela*/
+
+alter table pessoas
+add column profissao varchar(10) after nome;		/* adiciona coluna DEPOIS*/
+
+alter table pessoas
+add column codigo int first;			/*adiciona como primeiro item */
+
+
+/*==============================================================================*/
+/*modify = modificar coluna
+change = modificar nome e coluna
+rename to = modificar nome da tabela*/
+
+SET SQL_SAFE_UPDATES = 0; 
+update pessoas 										/*permite que alterar colunas com not null*/
+ set profissao='';
+
+alter table pessoas					
+rename to gafanhotos;					/*muda nome da tabela*/
+
+alter table pessoas
+modify column profissao varchar(20) not null default '';     /*muda tipo primitivo da colunae e as constraint*/
+															
+                                                            /*se for não for modificar o nome na coluna usar o modify, se for mudar usar o change*/
+alter table pessoas
+change column profissao prof varchar(20) ;			/*muda nome e tipo primitivo da coluna e as constraint*/
+
+/*-----------------------------------------------------------------------------------*/
+
+create table if not exists cursos (      /* if not exists para nao sobre escrever uma tabale com mesmo nome na existente*/
+
+nome varchar(30) not null unique,		/*unique nao deixa criar com dois nomes iguais*/
+descricao text,
+carga int unsigned,						/*unsigned impede de colocar valores negativos*/		
+totaulas int unsigned,
+ano year default '2016'
+
+)default char set =utf8;
+
+alter table cursos
+add column idcursos int first;
+
+alter table cursos
+add primary key (idcursos);
+
+describe cursos;
+/*-----------------------------------------------*/
+create table if not exists teste(
+id int,
+nome varchar(10),
+idade int
+);
+
+insert into teste value
+('1', 'pedro', '22'),
+('2', 'maria', '12'),
+('3', 'maricota', '73');
+
+
+select*from teste;
+
+drop table if exists teste;  /*apaga se a table existir*/
+
+/*===================================================================================*/
+
+use cadastro;
+
+select*from cursos;
+
+/*registro=linha=tupla*/
+
+INSERT INTO cursos VALUES
+/*(idcursos, nome, descricao,carga,totaulas,ano);*/
+    
+    ('1','HTML4','Curso de HTML5', '40','37','2014'),
+    ('2','Algoritmos','Lógica de Programação','20','15','2014'),
+    ('3','Photoshop','Dicas de Photoshop CC','10','8','2014'),
+    ('4','PGP','Curso de PHP para iniciantes','40','20','2010'),
+    ('5','Jarva','Introdução à Linguagem Java','10','29','2000'),
+    ('6','MySQL','Banco de Dados MySQL','30','15','2016'),
+    ('7','Word','Curso completo de Word','40','30','2016'),
+    ('8','Sapateado','Danças Rítmicas','40','30','2018'),
+    ('9','Cozinha Árabe','Aprenda a fazer Kibe','40','30','2018'),
+    ('10','Youtuber','Gerar polêmica e ganhar inscritos','5','2','2018');
+    
+    
+    /*linhas sao registros, colunas sao campos*/
+    
+    /*================= manipular linha ========================================*/
+    
+update cursos
+set nome = 'HTML5'			/*atualiza o nome da tabela cursos para HTML5 ondeo indecurso for 1*/
+where idcurso='1';
+
+update cursos
+set nome='PHP', ano='2015'			   /* atualiza dois campos ao mesmo tempo onde o idcurso for 4*/
+WHERE idcurso= '4';
+    
+update cursos
+set nome= 'Java', carga = '40', ano = 2015		/*limit ira limitar apenas a 1 linha, a primeira*/
+where idcurso='5'
+limit 1;
+
+select * from cursos;
+
+update cursos
+set ano= '2050', carga ='800'			/* modificara onde(where) os campos forem 2018*/
+where ano= '2018';
+
+update cursos
+set ano= '2018', carga ='0'				/*mofica campos onde tem o ano=2050, mas sera limitado(LIMIT) a modficiar paenas o primeiro*/
+where ano= '2050'
+limit 1;
+
+delete from cursos			/*Deletara a linha toda que corresponde ao idcurso=8*/
+where idcurso='8';
+
+delete from cursos			/*deletara todas as linhas que forem do ano=2018*/
+where ano='2018';
+
+delete from cursos			/*deletara todas as linhas que forem do ano=2050, mas sera limitado(limit) ate as duas priemiras*/
+where ano='2050'
+limit 2;
+
+truncate table cursos;       /*apaga todos o dados da tabela curso, todas as linhas*/
+
+/*=================================================================================================*/
+
+use cadastro;
+select * from gafanhotos;
+select * from cursos;				/*adicionei novamento os dados para curso ^^*/
+describe gafanhotos;
+desc cursos;
+
+/*Fazer backup do banco de dados
+1- Ir em server
+2- Data export
+3- Selecionar o banco e as tabelas desejada
+4- Selecionar o tipo de dump (structure and date)
+5- Escolher qual o tipo de exportacao quer( exportar folder inteiro "um projeto", ou em um arquivo unico)
+6-Marca a opicao de "include create schema" para  ele abri sem ter que criar um banco de dados
+7- clicar em start export
+*/
+
+drop database cadastro;  /*apaguei banco de dados inteiro*/
+
+/* para colocar o backup feito basta ir
+1- server
+2- data import
+3-selecione a pasta que esta seu dump
+4-selecione o tipo de formato que voce importou em dump anteriormente (folder inteiro "um projeto", ou em um arquivo unico contained file)
+5-selecionar o arquivo dump
+6- clikar em import */
+
+use cadastro;
+show tables;
+describe cursos;
+describe gafanhotos;			/*tudo certo :)*/
+select * from gafanhotos;
+select * from cursos;
+
+/*============================================================================*/
+
+/*Mysql console*/
+/*
+1-show databases;
+2-status;
+3-use ''banco de dados''
+4-status
+5- show tables
+6-describre ''banco de dados''
+7-update cursos set nome='pt'where idcurso ='1';*/
+
+select*from cursos;
+
+/*=================================*/
+
+/* PHP MYadmin*/
+
+show create table amigos;      /* mostra a forma que foi criado a tebela amigos no console, a tabela criada pelo phpmyadmin*/
+
+show create database exemplo; /* mostra a forma que foi criado o banco de dados  no console, o banco criada pelo phpmyadmin*/
+/*=================================================================================================================================================*/
+/*SELECT 11*/
+select*from gafanhotos;  /*  *=tudo, * significa todas colunas*/
+select*from cursos;
+
+select*from cursos		/* ORDENA POR ORDEM ALFABETICA, pode usar parametro asc no final*/
+order by nome;
+
+select*from cursos
+order by nome desc;		/*ordena em ordem alfabetica mas ao contraio, '' order by nome DESC''*/
+
+select ano, nome, carga from cursos		/*filtrara as colunas e mostrara apenas as desejadas, na ordem que quiser*/
+order by ano, nome;						/* ordena primeiro por ano depois por nome*/
+
+select*from cursos				/*seleciona a tabela cursos, onde o ano for = a 2016, ordenados pelo nome em ordem alfabetica*/
+where ano='2016'
+order by nome;
+
+select nome, descricao, ano from cursos				
+where ano <= '2015'					/* selecionara nome, descricao e ano da tabela cursos*, ondeo ano sera <= 2015, ordenados pelo ano depois nome*/
+order by ano, nome;
+
+/* operadores sql 
+< menor
+> maior
+= igual
+>= maior ou igual
+<= menor ou igual
+!= ou <> diferente 
+and = e &&*
+or = ou ||
+like = parecido/semelhante 
+% = 
+_ = obriga que tenha uma letra*/
+
+select nome, ano from cursos		/*selecionara nome e ano, que fiquem entre 2014 e 2016 'between', ano sera decrecente 'desc', nome acendente 'asc'*/
+where ano between 2014 and 2016
+order by ano desc, nome asc;
+												/*'in' valores especificos, 'between' faixa entre valores*/ 
+select nome, descricao, ano from cursos
+where ano in (2014, 2016, 2020)					/* 'in' poderei colocar valores especificos*/
+order by ano;
+
+select*from cursos
+where carga > 35 and totaulas <30		/*selecionara apenas campos com carga > 35 E totaulas < 30*/
+order by nome;
+
+select*from cursos
+where carga > 35 or totaulas <30		/* Selecionara com carga>35 OU com totaulas <30, qualquer campo que tiver uma das duas sera selecionado*/
+order by idcurso, nome;
+
+/*select 2*/
+
+select*from cursos				/*seleciona apenas onde o nome for php*/
+where nome= 'php';
+
+select* from cursos			/*seleciona todos os registros que comecam com A, LIKE = parecido/semelhante*/ 
+where nome  like 'a%';			/* '%' substitui nenhum ou varios caracteres, 'A%' mostrara registro que comeca com 'A'*/
+
+select*from cursos
+where nome like '%a';				/* '%A' Mostrara registro que termine com 'A'*/
+
+select*from cursos
+where nome like '%a%';	/* '%a%' selecionara os registro que tenham a letra 'a' em qualquer lugar*/
+
+select*from cursos
+where nome not like '%a%';		/* not mostrara os registros que n'ao tenham 'a' em nenhum lugar*/
+
+/* workbench, clika no registro da apply, aparece o comando*/
+
+select*from cursos				
+where nome like 'ph%p';		/*selecionara registros que comece com ph % e termine com nome p 'ph%p', Photoshop e PHP etc*/
+
+select*from cursos				
+where nome like 'ph%p_';	/*selecionara registros que comece com ph % e termine com nome p mas tenha algo no final '_', etec php4*/
+
+select*from cursos				
+where nome like 'p_p%';   /*selecionara registros que  tenha p, qualquer coisa aleatoria e depois p novamente 'p_p' php*/ 
+
+select*from gafanhotos
+where nome like '%_silva%';   /*selecionara registros que tenha silva em qualquer lugar, '_' = seleciona quem tem silva com espaco antes ' '*/
+
+select*from gafanhotos
+where nome like '%silva%';
+
+select distinct nacionalidade from gafanhotos;	/* A Sentença SQL SELECT DISTINCT. Em uma tabela, algumas 
+												das colunas podem conter valores duplicados. Este não é um problema, no entanto, 
+                                                às vezes você irá querer listar apenas os valores diferentes (distintos)*/
+                                              
+/* funcoes de agregacao*/
+select count(*)from cursos; 	/* contara o numero de linhas/registros*/
+
+select count(*)from cursos
+where carga >40;				/* contara os registro que em mais de 40*/
+
+select count(*)from cursos	 /* contara os registro que comece com 'p%'*/
+where nome like'p%';	
+
+select max(carga)from cursos; /* mostra o maior valor no campo*/
+
+select nome, max(totaulas)from cursos where ano='2016'; /*mostrara o curso que teve maior numero de aulas em 2016, mostrara o nome tmb*/
+
+select min(totaulas)from cursos where carga <= 30;	/* mostrara o menor valor entre os campos de totaulas, onde carga seja <=30*/
+
+select nome, min(totaulas)from cursos;	/* mostrara o menor valor entre os campos de totaulas 'MIN()', mostrara o nome tmb*/
+ 
+ select  sum(totaulas) from cursos; /* somara todos os valores de totaulas*/
+ 
+ select  sum(totaulas) from cursos
+ where ano <= 2016;				/* somara todos os valores de totaulas onde ano <= 2016*/
+ 
+ select count(idcurso) from cursos;
+ 
+ select avg(totaulas) from cursos; /* somara a media de todos os campos de totaulas*/
+ 
+ /*exercicios select*/
+ /*1- Uma lista com o nome de todas as mulheres na tabela gafanhotos*/
+ select*from gafanhotos;
+ 
+ select nome from gafanhotos
+ where sexo ='F'
+ order by nome;
+ 
+ /*2- Uma lista com os dados de todos aqueles que nasceram entre 1/jan/2000 e 31/dez/2015*/
+ 
+ select * from gafanhotos
+ where nascimento between '2000-01-01' and '2015-12-31';
+ 
+ /*3- Uma lista de todos os homens que trabalham como programadores*/
+ 
+ select nome, profissao from gafanhotos
+ where profissao ='programador' and sexo='M'
+ order by nome;
+ 
+ /*4- Uma lista com os dados de todas as mulheres que nasceram no Brasil e que tem seu nome iniciando com a letra 'J'*/
+ 
+ select*from gafanhotos
+ where nacionalidade='brasil' and sexo='f'and  nome like 'j%'
+ order by nome;
+ 
+ /*5- Uma lista com o nome e nacionalidade de todos os homens que tem silva no nome, nao nasceram no Brasil e pesam menos de 100k*/
+ 
+ select nome, nacionalidade from gafanhotos
+ where sexo='M' and nome like '%silva%' and nacionalidade != 'brasil' and peso <100
+ order by nome;
+ 
+ /*6-Qual e a maior altura entre gafanhotos homens que moram no Brasil?*/
+ 
+ select max(altura) from gafanhotos
+ where sexo='M' and nacionalidade='Brasil';
+ 
+ /*7- Qual e a media de peso dos gafanhotos cadastrados?*/
+ 
+ select avg(peso) from gafanhotos;
+ 
+ /*8- Qual e o menor peso entre as mulheres que nasceram fora do Brasil e entre 01/jan/1990 e 31/dez/2000?*/
+ 
+ select min(peso) from gafanhotos
+ where sexo='f' and nacionalidade != 'brasil' and nacionalidade between'1990-01-01' and '2000-12-31';
+ 
+ /*9- Quantas mulheres tem mais de 1.90 de altura?*/
+ 
+ select count(nome) from gafanhotos
+ where sexo='f' and altura > '1.90';
+ 
+ /*Select AGRUPANDO 13*/
+ 
+ SELECT distinct totaulas from cursos;
+ 
+ select totaulas, count(nome) from cursos
+ group by totaulas
+ order by totaulas;									/* 'group by' selecionara os dados por grupos, o 'count' mostrara o numero de pessoas que 
+														ten em cada grupo*/
+													  
+
+
+select sexo, count(sexo)from gafanhotos			 
+group by sexo;
+																/* exemplo mostrando o numero de pessoas do sexo masculino e feminino 
+                                                               |sexo|count(sexo)|
+															   |M	|	39		|
+															   |F	|	22		|
+                                                                */
+select profissao, count(profissao) from gafanhotos
+group by profissao; 									/* contando numero de pessoas da mesma profissao*/
+	
+
+
+select ano, count(*) from cursos		
+where ano >='2015'				/* mostrara anos >= a 2015, onde ano estara em grupos, e count mostrara o numero de registro >=2015*/
+group by ano;
+
+
+select carga, count(*) from cursos
+group by carga							/*'having' mostrara apenas registro que o contador seja maior que 3, having so pode ser ultilizado no campo que agrupou ''group by''*/
+having count(*)>3;
+
+select*from cursos;
+
+ select ano, count(*) from cursos   /*selecionando ano e adiciona contador*/
+ where totaulas > 30				/*onde o totaulas seja >30*/
+ group by ano 						/* vou agrupar por ano*/	
+ having ano > 2013					/*having so ira mostrar quem tem ano acima de 2013*/
+ order by count(*);					/*ordenado pelo nome*/
+ 
+ 
+ select carga, count(*) from cursos
+ where ano> 2015
+ group by carga
+ having carga > (select avg(carga) from cursos);		/*selecionara cargas que sejam maior que a media de todas as cargas*/
+ 
+ /*Exercicios*/
+ 
+ /* 1- Uma lista com as profissoes do gafanhotos(pessoas) e seus respectivos quantitativos*/
+ 
+ select profissao, count(*) from gafanhotos
+ group by profissao;
+ 
+ /* 2- Qunatos gafanhotos homens e mulheres nasceram apos 01/jan/2005?*/ 
+ 
+ select sexo, count(*) from gafanhotos
+ where nascimento > '2005-01-01'
+ group by sexo;
+ 
+ /* 3-Uma lista com os gafanhotos que nasceram fora do Brasil, mostrando o país de origem e o total de pessoas nascidas lá. Só nos interessam os países que tiverem mais de 3 gafanhotos com essa nascionalidade.*/
+ 
+ select nacionalidade, count(*) from gafanhotos
+ where nacionalidade !='brasil'
+group by nacionalidade
+ having count(*) > 3;
+ 
+ /*  4-Uma lista agrupada pela altura dos gafanhotos, mostrando quantas pessoas pesam mais de 100kg e que estão acima da média de altura de todos os cadastrados.*/
+ 
+ select nome, altura, count(*) from gafanhotos
+ where peso >'100'
+ group by altura
+ having altura > (select avg(altura) from gafanhotos);
+ 
+ 
+ 
+ /* 15 Join chaves estrangeiras*/
+ use cadastro;
+ desc gafanhotos;
+ desc cursos;
+ 
+ /**********************************adicionando chave estrangeira***************************************/
+ alter table gafanhotos			
+ add cursopreferido int;
+
+alter table gafanhotos 
+add foreign key (cursopreferido)	/*adicionando o campo como chave estrangeira*/
+references cursos(idcurso);			/*apontando a referencia da chave estrangeira*/
+
+select*from gafanhotos;
+select*from cursos;
+
+update gafanhotos
+set cursopreferido= '6' /*colocando o curso de id 6 da tabela cursos no primeiro registro de id um na  tabela gafanhotos*/
+where id='1';
+
+delete from cursos where idcurso = '6'; /* impossivel deletar, pois tem relacao com um registro de gafanhotos fereign key*/
+
+delete from cursos where idcurso = '28'; /*possivel apagar o registro, pois nao tem relacao com nenhum outro*/
+
+select gafanhotos.nome , gafanhotos.cursopreferido, cursos.nome, cursos.ano from gafanhotos join cursos
+on gafanhotos.cursopreferido = cursos.idcurso
+order by cursos.idcurso;     
+/* a palava antes do ponto referencia a tabala do atributo desejado 'gafanhotos.nome', A cláusula inner JOIN é 
+usada quando se quer recuperar dados em mais de uma tabela através da igualdade de suas foreign keys,
+ON sempre dede ser usando em um join, para por sentido a ele, colocando a key estrangeira = a primaria.*/
+
+select g.nome , g.cursopreferido, c.nome, c.ano from gafanhotos as g join cursos as c
+on g.cursopreferido = c.idcurso											/* as=é, as transforma abreviando o nome da tabela, 'from gafanhotos as g join cursos as c'*/
+order by c.idcurso;  
+
+select gafanhotos.nome , gafanhotos.cursopreferido, cursos.nome, cursos.ano from gafanhotos left outer join cursos  
+on gafanhotos.cursopreferido = cursos.idcurso
+order by cursos.idcurso;
+
+/* outer join mostrara os dados que nao sao relacionados, left mostrara a tabela do lado esquerdo, right a do lado direoto
+ex: from gafanhotos left outer join cursos , mostrara a de gafanhotos*/
+
+/*********************************************INNER JOIN com várias tabelas********************************************/
+
+/*relacionamento NxN ou muitos para muitos*/
+
+/*necesario criar uma nova tabela para armazenar os identificadores das outros duas ja existente que vao se relacionar*/
+
+create table gafanhotos_assiste_curso(
+id int not null auto_increment,								/*id para acessar os dados*/
+data date,
+idgafanhotos int,			/*chave esntrangeira de gafanhotos*/
+idcurso int,				/*chave esntrangeira de cursos*/
+primary key (id),			/* chave primaria da nova tabela*/
+foreign key (idgafanhotos) references gafanhotos(id),   /* transformando em chave estrangeira e apontando a referencia de qual tabela e*/
+foreign key (idcurso) references cursos(idcursos)		/* transformando em chave estrangeira e apontando a referencia de qual tabela e*/
+)default charset=utf8;
+
+insert into gafanhotos_assiste_curso values
+(default,'2014-03-01','1','2');
+
+select*from gafanhotos_assiste_curso;
+
+select * from  gafanhotos  g
+join gafanhotos_assiste_curso a
+on g.id = a.idgafanhotos;		
+	
+/*seleciona a lisda de gafanhotos com apelido de g, join gafanhotos_assiste_curso coloca a lista a direita, on vai deixar o id de gafanhitos g.id = ao id da chave estrangeira 
+idgafanhotos onde foi registrado o id do gafanhoto + o id do curso*/
+
+select g.id, g.nome, a.idgafanhotos ,a.idcurso from  gafanhotos as g
+join gafanhotos_assiste_curso as a		/*mostrara o nome e o id do curso que a pessoa faz*/
+on g.id = a.idgafanhotos;	
+/*
+id| nome 				|idgafanhotos|idcurso
+1	Daniel Morais			1			2
+3	Emerson Gabriel			3			6
+22	Guilherme de Sousa		22			12			/*id da tabela gafanhotos sera sempre igual o idgafanhotos que e a chave estrangeira do ID de gafanhotos, 'ON'
+1	Daniel Morais			1			19
+
+*/
+
+select g.nome ,a.idcurso from  gafanhotos as g
+join gafanhotos_assiste_curso as a		/*mostrara o nome e o id do curso que a pessoa faz*/
+on g.id = a.idgafanhotos
+order by g.nome;	
+
+
+
+ select g.nome ,a.idcurso, c.nome from  gafanhotos as g
+join gafanhotos_assiste_curso as a		
+on g.id = a.idgafanhotos
+join cursos c
+on c.idcurso = a.idcurso
+order by g.nome;	
+
+select c.nome, c.carga, g.nome, a.data from cursos as c				
+join gafanhotos_assiste_curso as a		
+on a.id = c.idcurso								
+join gafanhotos as g
+on g.id = a.idgafanhotos;
+
+/*
+HTML5		40	Daniel Morais		2014-03-01
+Algoritmos	20	Emerson Gabriel		2015-12-22
+Photoshop5	10	Guilherme de Sousa	2014-01-01
+PHP			40	Daniel Morais		2016-05-12
+ */
+
+                                 
